@@ -1,24 +1,22 @@
 import React, { useState } from 'react';
-import axios from 'axios'
-
+import axios from 'axios';
+import { Link , useNavigate } from 'react-router-dom';
 
 
 const Signup = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault();
     axios.post('http://localhost:3000/register', { name, email, password })
-  .then(res => {
-    alert("created");
-  })
-  .catch(err => console.log(err));
-
-
-   
+      .then(res => {
+        navigate('/login')
+        
+      })
+      .catch(err => console.log(err));
   };
 
   return (
@@ -54,13 +52,8 @@ const Signup = () => {
               id="password"
               placeholder="Enter Password"
               autoComplete="current-password"
-              onChange={(e) => {
-                setPassword(e.target.value);
-               
-               
-              }}
+              onChange={(e) => setPassword(e.target.value)}
             />
-           
           </div>
           <button
             type="submit"
@@ -68,10 +61,10 @@ const Signup = () => {
           >
             Register
           </button>
-          <p>Already Have an Account</p>
-          
-            <button className='btn btn-default border w-100 bg-light rounded-0 text-decoration-none'>Login</button>
-         
+          <p>Already Have an Account?</p>
+          <Link to="/login" className="btn btn-default border w-100 bg-light rounded-0 text-decoration-none">
+            Login
+          </Link>
         </form>
       </div>
     </div>
