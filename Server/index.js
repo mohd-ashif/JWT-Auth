@@ -19,8 +19,28 @@ app.use(cookieParser());
 
 mongoose.connect('mongodb://127.0.0.1:27017/employee')
 
+const varifyUser = (req, res, next) => {
+        const token = req.cookies.token 
+        if(!token) {
+            return res.json("Token is Missing ")
+        }else{
+            jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+                if(err) {
+                    return res.json("Error with token ")
+                }else{
+                    if(decoded.role === 'admin'){
+                        next()
+                    }else{
+                        return res.json("not admin ")
+                    }
+                }
+            })
+        }
+}
 
-
+app.get('/dashboard', verifyUser, (req, res) => {
+    res.json("Success"); 
+});
 
 app.post('/register', (req, res) => {
     const { name, email, password } = req.body;
@@ -44,7 +64,7 @@ app.post("/login" , (req, res) => {
                    const token = jwt.sign({email : user.email,role:user.role }, 
                     " jwt-secret-key", {expiresIn: '1d'})
                     res.cookie('token', token)
-                    return res.json("success")
+                    return res.json({Status:"Success", role:user.role})
                 }else{
                     return res.json("the password is incorrect ")
                 }

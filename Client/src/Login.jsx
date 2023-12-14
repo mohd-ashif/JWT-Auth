@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link , useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate()
 
   axios.defaults.withCredentials = true;
 
@@ -13,7 +14,13 @@ const Login = () => {
 
     axios.post('http://localhost:3000/login', { email, password })
       .then(res => {
-        console.log(res.data);
+        if(res.data.Status === "Success"){
+            if(res.data.role === "admin"){
+                navigate('/dashboard')
+            }else{
+                navigate('/')
+            }
+        }
       })
       .catch(err => {
         console.error(err);
